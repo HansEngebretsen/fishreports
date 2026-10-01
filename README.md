@@ -3,7 +3,7 @@
 A single-page dashboard comparing recreational salmon catch and angler effort in Puget Sound
 Marine Areas 10 (Seattle–Bremerton) and 11 (Tacoma–Vashon) with fish passage counts, June–November, 2023–2026.
 
-Open `fisreport.html` in a browser. There is no build step.
+Live at **https://haaans.com/fishreports/**. Locally, open `index.html` in a browser. There is no build step.
 
 ## What it shows
 
@@ -44,13 +44,13 @@ Every table in the page links to the record its numbers came from.
 ## Updating
 
 ```bash
-python3 update_data.py           # pull live sources, rewrite the data block in fisreport.html
+python3 update_data.py           # pull live sources, rewrite the data block in index.html
 python3 update_data.py --check   # show what would change
 ```
 
 The script refreshes the creel data, the current Ballard season and any USACE workbook currently posted
 (`pip install openpyxl` for the workbook). Expansion factors come from PDF reports, so they are edited by hand
-in `EST` in `fisreport.html` when WDFW publishes a new post-season report.
+in `EST` in `index.html` when WDFW publishes a new post-season report.
 
 ## License
 

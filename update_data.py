@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Refresh the data embedded in fisreport.html from the public sources.
+"""Refresh the data embedded in index.html from the public sources.
 
-    python3 update_data.py            # rebuild DATA from live sources, rewrite fisreport.html
+    python3 update_data.py            # rebuild DATA from live sources, rewrite index.html
     python3 update_data.py --check    # rebuild and report differences only
 
 Live each run:
@@ -21,7 +21,7 @@ import csv, datetime, html, io, json, re, sys, urllib.request
 from collections import defaultdict
 from pathlib import Path
 
-PAGE = Path(__file__).with_name('fisreport.html')
+PAGE = Path(__file__).with_name('index.html')
 YEARS = [2023, 2024, 2025, 2026]
 MONTHS = range(6, 12)
 UA = {'User-Agent': 'Mozilla/5.0 (fishreport data refresh)'}

@@ -52,7 +52,7 @@ def creel(idx):
     out = {'10': {}, '11': {}}
     for y in YEARS:
         rows = csv.DictReader(io.StringIO(get(f'{CREEL}/export?_format=csv&sample_date={idx[y]}').decode('utf-8-sig')))
-        agg = defaultdict(lambda: {'i': 0, 'a': 0, 'ch': 0, 'co': 0, 'pk': 0})
+        agg = defaultdict(lambda: {'i': 0, 'a': 0, 'ch': 0, 'co': 0, 'pk': 0, 'cm': 0})
         for r in rows:
             area = r['Catch area'].split(',')[0].replace('Area ', '')
             if area not in out:
@@ -61,7 +61,7 @@ def creel(idx):
             if d.month not in MONTHS:
                 continue
             v = agg[(area, d.month)]
-            for k, col in [('i', '# Interviews (Boat or Shore)'), ('a', 'Anglers'), ('ch', 'Chinook'), ('co', 'Coho'), ('pk', 'Pink')]:
+            for k, col in [('i', '# Interviews (Boat or Shore)'), ('a', 'Anglers'), ('ch', 'Chinook'), ('co', 'Coho'), ('pk', 'Pink'), ('cm', 'Chum')]:
                 v[k] += int(float(r[col] or 0))
         for a in out:
             out[a][str(y)] = [agg.get((a, m)) for m in MONTHS]
@@ -107,7 +107,7 @@ def mmd_live():
     head = next(r for r in rows if r and 'Coho' in r and 'Pink' in r)
     idx = {h: i for i, h in enumerate(head) if isinstance(h, str)}
     ch_cols = [h for h in idx if 'CH' in h or 'Jack' in h]
-    mon = defaultdict(lambda: {'ch': 0, 'co': 0, 'pk': 0}); year = None
+    mon = defaultdict(lambda: {'ch': 0, 'co': 0, 'pk': 0, 'cm': 0}); year = None
     for r in rows:
         d = next((c for c in r[:3] if isinstance(c, datetime.datetime)), None)
         if not d:
@@ -117,6 +117,7 @@ def mmd_live():
         mon[d.month]['ch'] += sum(n(r[idx[c]]) for c in ch_cols)
         mon[d.month]['co'] += n(r[idx['Coho']])
         mon[d.month]['pk'] += n(r[idx['Pink']])
+        mon[d.month]['cm'] += n(r[idx['Chum']]) if 'Chum' in idx else 0
     last = max(m for m in mon) if mon else 0
     return year, [mon[m] if m in mon and m <= last else None for m in MONTHS]
 

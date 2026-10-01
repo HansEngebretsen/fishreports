@@ -128,11 +128,11 @@ footer{font-size:11.5px;color:var(--ink-3);padding:0 0 28px}
     <div class="grid two" id="src"></div>
   </section>
 
-  <footer><b>Estimated</b> = WDFW creel interviews × that area-season's expansion factor (×), which is WDFW's own expanded trip estimate divided by the anglers it interviewed on the same Chinook-season days. Interviews capture roughly 1 in 3 anglers. <b>Sampled</b> = the raw interview counts. Passage: Ballard Locks ladder counts (MA 10); USACE White River trap, Puyallup system (MA 11). Averages use only seasons with data. Updated <span id="updated"></span>.</footer>
+  <footer><b>Estimated</b> = WDFW creel interviews × that area-season's expansion factor (×), which is WDFW's own expanded trip estimate divided by the anglers it interviewed on the same Chinook-season days. Interviews capture roughly 1 in 3 anglers. <b>Sampled</b> = the raw interview counts. Catch and passage include Chinook, coho and chum (pink optional). Chum counts are small because sampling winds down before the late-fall chum run, and the Ballard Locks don't count chum. Passage: Ballard Locks ladder counts (MA 10); USACE White River trap, Puyallup system (MA 11). Averages use only seasons with data. Updated <span id="updated"></span>.</footer>
 </div>
 
 <script>
-const DATA = /*DATA*/{"creel":{"10":{"2023":[{"i":798,"a":1705,"ch":9,"co":1155,"pk":6},{"i":2658,"a":5790,"ch":447,"co":3464,"pk":183},{"i":2817,"a":6506,"ch":790,"co":1776,"pk":4801},{"i":2280,"a":5001,"ch":25,"co":3520,"pk":1037},{"i":758,"a":1516,"ch":19,"co":612,"pk":1},null],"2024":[{"i":755,"a":1645,"ch":23,"co":1025,"pk":0},{"i":1988,"a":4425,"ch":688,"co":1018,"pk":1},{"i":1965,"a":4249,"ch":521,"co":2496,"pk":3},{"i":3600,"a":8153,"ch":10,"co":9230,"pk":0},{"i":591,"a":1202,"ch":2,"co":576,"pk":0},{"i":47,"a":88,"ch":0,"co":13,"pk":0}],"2025":[{"i":799,"a":1778,"ch":8,"co":1105,"pk":16},{"i":2026,"a":4477,"ch":561,"co":620,"pk":239},{"i":2937,"a":6737,"ch":559,"co":1440,"pk":5827},{"i":2960,"a":6356,"ch":26,"co":5795,"pk":407},{"i":721,"a":1403,"ch":2,"co":551,"pk":0},{"i":37,"a":69,"ch":0,"co":2,"pk":0}],"2026":[{"i":759,"a":1624,"ch":1,"co":1201,"pk":0},{"i":2408,"a":5450,"ch":464,"co":1400,"pk":0},{"i":2119,"a":4683,"ch":27,"co":2783,"pk":3},{"i":3152,"a":7282,"ch":20,"co":8305,"pk":1},null,null]},"11":{"2023":[{"i":1275,"a":2625,"ch":456,"co":138,"pk":1},{"i":1348,"a":2695,"ch":310,"co":256,"pk":3},{"i":767,"a":1167,"ch":0,"co":10,"pk":621},{"i":1672,"a":3314,"ch":12,"co":1792,"pk":345},{"i":463,"a":878,"ch":1,"co":199,"pk":6},{"i":7,"a":11,"ch":0,"co":0,"pk":0}],"2024":[{"i":1457,"a":2833,"ch":324,"co":21,"pk":0},{"i":910,"a":1712,"ch":214,"co":95,"pk":0},{"i":2536,"a":4906,"ch":680,"co":791,"pk":0},{"i":2121,"a":4216,"ch":48,"co":2552,"pk":0},{"i":327,"a":617,"ch":1,"co":88,"pk":0},{"i":44,"a":85,"ch":0,"co":2,"pk":0}],"2025":[{"i":1748,"a":3237,"ch":448,"co":16,"pk":0},{"i":1024,"a":1892,"ch":203,"co":47,"pk":146},{"i":3580,"a":7762,"ch":498,"co":213,"pk":6253},{"i":1705,"a":3183,"ch":5,"co":1090,"pk":233},{"i":304,"a":524,"ch":0,"co":74,"pk":0},{"i":19,"a":34,"ch":0,"co":1,"pk":0}],"2026":[{"i":1465,"a":2583,"ch":282,"co":10,"pk":0},{"i":1775,"a":3911,"ch":320,"co":83,"pk":0},{"i":2508,"a":5014,"ch":592,"co":408,"pk":0},{"i":1567,"a":2856,"ch":13,"co":1198,"pk":0},null,null]}},"ballard":{"2023":[{"ch":0,"co":0,"so":4145},{"ch":320,"co":0,"so":17657},{"ch":19550,"co":0,"so":2058},{"ch":3454,"co":48634,"so":47},{"ch":0,"co":552,"so":0},null],"2024":[{"ch":2,"co":0,"so":2060},{"ch":781,"co":0,"so":20318},{"ch":15111,"co":110,"so":803},{"ch":2628,"co":19059,"so":7},{"ch":0,"co":42,"so":0},null],"2025":[{"ch":0,"co":0,"so":349},{"ch":391,"co":0,"so":14410},{"ch":15606,"co":331,"so":3118},{"ch":2757,"co":27789,"so":4},{"ch":0,"co":30,"so":0},null],"2026":[{"ch":0,"co":0,"so":281},{"ch":308,"co":0,"so":29561},{"ch":10725,"co":420,"so":1460},{"ch":3642,"co":13074,"so":0},null,null]},"puyallup":{"2023":[{"ch":730,"co":0,"pk":0},{"ch":1678,"co":0,"pk":10},{"ch":2121,"co":2179,"pk":325853},{"ch":1623,"co":20321,"pk":1002215},{"ch":87,"co":6584,"pk":29020},{"ch":0,"co":548,"pk":43}],"2024":[null,null,null,null,null,null],"2025":[{"ch":633,"co":0,"pk":0},{"ch":1333,"co":0,"pk":1214},{"ch":1482,"co":676,"pk":453497},{"ch":835,"co":4370,"pk":388573},null,null],"2026":[null,null,null,null,null,null]}}/*END*/;
+const DATA = /*DATA*/{"creel":{"10":{"2023":[{"i":798,"a":1705,"ch":9,"co":1155,"pk":6,"cm":0},{"i":2658,"a":5790,"ch":447,"co":3464,"pk":183,"cm":0},{"i":2817,"a":6506,"ch":790,"co":1776,"pk":4801,"cm":0},{"i":2280,"a":5001,"ch":25,"co":3520,"pk":1037,"cm":0},{"i":758,"a":1516,"ch":19,"co":612,"pk":1,"cm":16},null],"2024":[{"i":755,"a":1645,"ch":23,"co":1025,"pk":0,"cm":0},{"i":1988,"a":4425,"ch":688,"co":1018,"pk":1,"cm":0},{"i":1965,"a":4249,"ch":521,"co":2496,"pk":3,"cm":0},{"i":3600,"a":8153,"ch":10,"co":9230,"pk":0,"cm":0},{"i":591,"a":1202,"ch":2,"co":576,"pk":0,"cm":47},{"i":47,"a":88,"ch":0,"co":13,"pk":0,"cm":7}],"2025":[{"i":799,"a":1778,"ch":8,"co":1105,"pk":16,"cm":0},{"i":2026,"a":4477,"ch":561,"co":620,"pk":239,"cm":1},{"i":2937,"a":6737,"ch":559,"co":1440,"pk":5827,"cm":1},{"i":2960,"a":6356,"ch":26,"co":5795,"pk":407,"cm":3},{"i":721,"a":1403,"ch":2,"co":551,"pk":0,"cm":22},{"i":37,"a":69,"ch":0,"co":2,"pk":0,"cm":1}],"2026":[{"i":759,"a":1624,"ch":1,"co":1201,"pk":0,"cm":0},{"i":2408,"a":5450,"ch":464,"co":1400,"pk":0,"cm":3},{"i":2119,"a":4683,"ch":27,"co":2783,"pk":3,"cm":3},{"i":3152,"a":7282,"ch":20,"co":8305,"pk":1,"cm":1},null,null]},"11":{"2023":[{"i":1275,"a":2625,"ch":456,"co":138,"pk":1,"cm":0},{"i":1348,"a":2695,"ch":310,"co":256,"pk":3,"cm":0},{"i":767,"a":1167,"ch":0,"co":10,"pk":621,"cm":0},{"i":1672,"a":3314,"ch":12,"co":1792,"pk":345,"cm":0},{"i":463,"a":878,"ch":1,"co":199,"pk":6,"cm":2},{"i":7,"a":11,"ch":0,"co":0,"pk":0,"cm":0}],"2024":[{"i":1457,"a":2833,"ch":324,"co":21,"pk":0,"cm":0},{"i":910,"a":1712,"ch":214,"co":95,"pk":0,"cm":0},{"i":2536,"a":4906,"ch":680,"co":791,"pk":0,"cm":0},{"i":2121,"a":4216,"ch":48,"co":2552,"pk":0,"cm":0},{"i":327,"a":617,"ch":1,"co":88,"pk":0,"cm":31},{"i":44,"a":85,"ch":0,"co":2,"pk":0,"cm":5}],"2025":[{"i":1748,"a":3237,"ch":448,"co":16,"pk":0,"cm":0},{"i":1024,"a":1892,"ch":203,"co":47,"pk":146,"cm":0},{"i":3580,"a":7762,"ch":498,"co":213,"pk":6253,"cm":0},{"i":1705,"a":3183,"ch":5,"co":1090,"pk":233,"cm":0},{"i":304,"a":524,"ch":0,"co":74,"pk":0,"cm":7},{"i":19,"a":34,"ch":0,"co":1,"pk":0,"cm":3}],"2026":[{"i":1465,"a":2583,"ch":282,"co":10,"pk":0,"cm":0},{"i":1775,"a":3911,"ch":320,"co":83,"pk":0,"cm":0},{"i":2508,"a":5014,"ch":592,"co":408,"pk":0,"cm":0},{"i":1567,"a":2856,"ch":13,"co":1198,"pk":0,"cm":0},null,null]}},"ballard":{"2023":[{"ch":0,"co":0,"so":4145},{"ch":320,"co":0,"so":17657},{"ch":19550,"co":0,"so":2058},{"ch":3454,"co":48634,"so":47},{"ch":0,"co":552,"so":0},null],"2024":[{"ch":2,"co":0,"so":2060},{"ch":781,"co":0,"so":20318},{"ch":15111,"co":110,"so":803},{"ch":2628,"co":19059,"so":7},{"ch":0,"co":42,"so":0},null],"2025":[{"ch":0,"co":0,"so":349},{"ch":391,"co":0,"so":14410},{"ch":15606,"co":331,"so":3118},{"ch":2757,"co":27789,"so":4},{"ch":0,"co":30,"so":0},null],"2026":[{"ch":0,"co":0,"so":281},{"ch":308,"co":0,"so":29561},{"ch":10725,"co":420,"so":1460},{"ch":3642,"co":13074,"so":0},null,null]},"puyallup":{"2023":[{"ch":730,"co":0,"pk":0,"cm":0},{"ch":1678,"co":0,"pk":10,"cm":0},{"ch":2121,"co":2179,"pk":325853,"cm":0},{"ch":1623,"co":20321,"pk":1002215,"cm":0},{"ch":87,"co":6584,"pk":29020,"cm":1},{"ch":0,"co":548,"pk":43,"cm":12}],"2024":[null,null,null,null,null,null],"2025":[{"ch":633,"co":0,"pk":0,"cm":0},{"ch":1333,"co":0,"pk":1214,"cm":0},{"ch":1482,"co":676,"pk":453497,"cm":0},{"ch":835,"co":4370,"pk":388573,"cm":0},null,null],"2026":[null,null,null,null,null,null]}}/*END*/;
 const YEARS = [2023, 2024, 2025, 2026];
 const M = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
 
@@ -172,7 +172,7 @@ const LINKS = {
 /* Only caveats that change how a number reads. key: source|year|month ('*' = any) */
 const NOTES = {
   'ballard|*|2': 'Aug coho includes the Jun 12–Aug 31 lump count.',
-  'ballard|*|4': 'Oct is Oct 1–2 only; no November count.',
+  'ballard|*|4': 'Oct is Oct 1–2 only; no November count. Chum are not counted at the Locks.',
   'ballard|2026|3': 'Sep 2026 through Sep 29.',
   'puyallup|2024|*': '2024 monthly counts not published. Annual (Tribe): 3,041 Chinook, 15,048 coho.',
   'puyallup|2025|3': 'Counts end Sep 18, 2025.',
@@ -206,13 +206,13 @@ const years = () => S.y === 'avg' ? YEARS : [S.y];
 
 // One season + month, summed over selected areas. A group is null unless every area has data.
 function one(y, i) {
-  let c = { a: 0, ch: 0, co: 0, pk: 0 }, p = { ch: 0, co: 0, pk: 0 };
+  let c = { a: 0, ch: 0, co: 0, cm: 0, pk: 0 }, p = { ch: 0, co: 0, cm: 0, pk: 0 };
   for (const a of areas()) {
     const r = DATA.creel[a][y][i];
     const x = S.b === 'est' ? EST[a][y][0] : 1;
-    if (!r) c = null; else if (c) { c.a += r.a * x; c.ch += r.ch * x; c.co += r.co * x; c.pk += r.pk * x; }
+    if (!r) c = null; else if (c) { c.a += r.a * x; c.ch += r.ch * x; c.co += r.co * x; c.cm += (r.cm || 0) * x; c.pk += r.pk * x; }
     const q = DATA[passKey(a)][y][i];
-    if (!q) p = null; else if (p) { p.ch += q.ch; p.co += q.co; p.pk += q.pk || 0; }
+    if (!q) p = null; else if (p) { p.ch += q.ch; p.co += q.co; p.cm += q.cm || 0; p.pk += q.pk || 0; }
   }
   return { c, p };
 }
@@ -227,7 +227,7 @@ function month(i) {
   const c = avg(cs), p = avg(ps), pk = S.p ? 1 : 0;
   return {
     i, c, p, nc: cs.length, np: ps.length,
-    catch: c && c.ch + c.co + pk * c.pk, trips: c && c.a, pass: p && p.ch + p.co + pk * p.pk
+    catch: c && c.ch + c.co + c.cm + pk * c.pk, trips: c && c.a, pass: p && p.ch + p.co + p.cm + pk * p.pk
   };
 }
 const rows = () => S.m.map(month);
@@ -272,10 +272,10 @@ function stats(rs) {
   const comp = (g, key) => total(r, x => x[g] && x[g][key]);
   $('vC').textContent = f(c); $('vT').textContent = f(t); $('vP').textContent = f(p);
   const pinkC = S.p ? `${SEP}<span>Pink ${f(comp('c', 'pk'))}</span>` : '';
-  $('sC').innerHTML = c == null ? 'No data' : `<span>Chinook ${f(comp('c', 'ch'))}</span>${SEP}<span>Coho ${f(comp('c', 'co'))}</span>${pinkC}`;
+  $('sC').innerHTML = c == null ? 'No data' : `<span>Chinook ${f(comp('c', 'ch'))}</span>${SEP}<span>Coho ${f(comp('c', 'co'))}</span>${SEP}<span>Chum ${f(comp('c', 'cm'))}</span>${pinkC}`;
   $('sT').innerHTML = t == null ? 'No data' : `<span>${(c / t).toFixed(2)} fish/angler</span>`;
   const pinkP = S.p && S.a !== '10' ? `${SEP}<span>Pink ${f(comp('p', 'pk'))}</span>` : '';
-  $('sP').innerHTML = p == null ? 'No data' : `<span>Chinook ${f(comp('p', 'ch'))}</span>${SEP}<span>Coho ${f(comp('p', 'co'))}</span>${pinkP}`;
+  $('sP').innerHTML = p == null ? 'No data' : `<span>Chinook ${f(comp('p', 'ch'))}</span>${SEP}<span>Coho ${f(comp('p', 'co'))}</span>${S.a !== '10' ? `${SEP}<span>Chum ${f(comp('p', 'cm'))}</span>` : ''}${pinkP}`;
 }
 
 /* ---------------- chart ---------------- */
@@ -336,10 +336,10 @@ function summary(rs) {
 function sources() {
   const blocks = [];
   for (const a of areas()) {
-    blocks.push(block(`MA ${a} creel interviews · WDFW`, 'creel' + a, y => DATA.creel[a][y], y => LINKS.creel(a, y), [['a', 'Anglers'], ['ch', 'Chinook'], ['co', 'Coho'], ['pk', 'Pink']]));
+    blocks.push(block(`MA ${a} creel interviews · WDFW`, 'creel' + a, y => DATA.creel[a][y], y => LINKS.creel(a, y), [['a', 'Anglers'], ['ch', 'Chinook'], ['co', 'Coho'], ['cm', 'Chum'], ['pk', 'Pink']]));
     blocks.push(a === '10'
       ? block('Ballard Locks · WDFW', 'ballard', y => DATA.ballard[y], LINKS.ballard, [['ch', 'Chinook'], ['co', 'Coho']])
-      : block('White River trap (Puyallup) · USACE', 'puyallup', y => DATA.puyallup[y], LINKS.puyallup, [['ch', 'Chinook'], ['co', 'Coho'], ['pk', 'Pink']]));
+      : block('White River trap (Puyallup) · USACE', 'puyallup', y => DATA.puyallup[y], LINKS.puyallup, [['ch', 'Chinook'], ['co', 'Coho'], ['cm', 'Chum'], ['pk', 'Pink']]));
   }
   $('src').innerHTML = blocks.join('');
 }

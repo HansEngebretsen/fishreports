@@ -9,7 +9,7 @@ Open `fisreport.html` in a browser. There is no build step.
 
 | Metric | Area | Source |
 |---|---|---|
-| Retained catch (Chinook, coho, pink) | MA 10, MA 11 | WDFW Puget Sound creel interviews |
+| Retained catch (Chinook, coho, chum; pink optional) | MA 10, MA 11 | WDFW Puget Sound creel interviews |
 | Angler trips | MA 10, MA 11 | WDFW Puget Sound creel interviews |
 | Passage | MA 10 | Ballard (Chittenden) Locks fish ladder counts |
 | Passage | MA 11 | USACE Mud Mountain Dam fish passage facility (White River trap, Puyallup system) |
@@ -35,6 +35,7 @@ Every table in the page links to the record its numbers came from.
 ## Method and caveats
 
 - **Estimated vs. Raw.** Creel interviews reach only about 1 in 3 anglers. **Raw** shows the interview counts as published. **Est.** (the default) multiplies them by an expansion factor for each area and season. The factor is WDFW's expanded angler-trip estimate divided by the anglers interviewed on the same Chinook-season days. Chinook, coho and pink scale up by the same ratio to within about 10%. Factors range from ×2.2 to ×3.5. They are measured during the summer Chinook season, so September–November values are an approximation.
+- **Chum** are included in catch and passage, but the counts are small: creel sampling winds down before the late-fall chum run, and the Ballard Locks don't count chum.
 - **Ballard Locks** counts Chinook from about Jun 18 and coho from Sep 1 to early October. October values are Oct 1–2 only, and there is no November count. Sockeye are listed but not charted.
 - **White River trap:** monthly counts are missing for 2024 and 2026 (USACE never posted them), and 2025 ends on Sep 18.
 - **Averages** use only the seasons that have data for that month. Combining both areas uses only seasons where both have data.

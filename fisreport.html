@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Puget Sound Catch vs. Passage</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%230a6c82' d='M3 16c4-6 10-8 16-7 3 .5 6 2.5 8 5l3-4v12l-3-4c-2 2.5-5 4.5-8 5-6 1-12-1-16-7z'/%3E%3Ccircle cx='9' cy='14.5' r='1.6' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#fff;--ink:#111;--ink-2:#555;--ink-3:#8a8a8a;--line:#e6e6e6;--soft:#f4f4f4;--accent:#0a6c82;--accent-ink:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1113;--ink:#ededed;--ink-2:#b0b0b0;--ink-3:#7c7c7c;--line:#262a2e;--soft:#1a1d20;--accent:#4db6cc;--accent-ink:#07252c}}
+:root[data-theme="dark"]{--bg:#0f1113;--ink:#ededed;--ink-2:#b0b0b0;--ink-3:#7c7c7c;--line:#262a2e;--soft:#1a1d20;--accent:#4db6cc;--accent-ink:#07252c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit}
+a{color:var(--accent);text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+/* filter bar */
+.bar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding-top:10px;padding-bottom:10px}
+.title{flex:1 0 100%;display:flex;justify-content:space-between;align-items:center;min-height:24px}
+h1{font-size:14px;font-weight:700;margin:0}
+.seg{display:flex;background:var(--soft);border-radius:8px;padding:2px;gap:2px}
+.seg button{border:0;background:none;border-radius:6px;min-height:34px;padding:0 10px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.tog{border:1px solid var(--line);background:none;border-radius:8px;min-height:38px;padding:0 12px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.tog[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.reset{border:0;background:none;color:var(--accent);font-weight:600;cursor:pointer;padding:0 4px;min-height:24px}
+.reset[hidden]{display:none}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.stat{padding:12px 12px 12px 0;min-width:0}
+.stat+.stat{padding-left:12px;border-left:1px solid var(--line)}
+.stat .k{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.stat .v{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.stat .s{font-size:12px;color:var(--ink-3)}
+.stat .s span{white-space:nowrap}
+.scope{font-size:12px;color:var(--ink-3);padding:10px 0 0;display:flex;justify-content:space-between;gap:8px}
+.scope button{border:0;background:none;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;padding:0}
+
+/* chart + summary */
+.main{display:grid;gap:8px 28px;grid-template-columns:minmax(0,1fr);padding:8px 0 16px;border-bottom:1px solid var(--line)}
+.chart{position:relative;height:240px}
+@media (min-width:960px){.main{grid-template-columns:minmax(0,1fr) 320px}.chart{height:300px}}
+
+table{width:100%;border-collapse:collapse}
+th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;padding-left:0}
+th:last-child,td:last-child{padding-right:0}
+th{font-size:11px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+tfoot td{font-weight:700;border-bottom:0}
+tr.yr td{text-align:left;padding:12px 0 5px;font-size:12px;border-bottom:1px solid var(--ink-3)}
+tr.yr b{margin-right:8px}
+tr.yr a{margin-right:8px}
+#sum tbody tr{cursor:pointer}
+#sum tbody tr.on td{background:var(--soft)}
+.muted{color:var(--ink-3)}
+.part{color:var(--ink-3)}
+
+/* sources */
+.src{padding:14px 0 24px}
+.src h2{font-size:13px;margin:0 0 4px;font-weight:700}
+.grid{display:grid;gap:18px 28px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:760px){.grid.two{grid-template-columns:1fr 1fr}}
+.block h3{font-size:12.5px;font-weight:700;margin:12px 0 2px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.block h3 .l{font-weight:500;font-size:12px;display:flex;gap:10px}
+.note{font-size:11.5px;color:var(--ink-3);margin:4px 0 0}
+.raw{font-size:12px;color:var(--ink-3);margin:0 0 4px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.raw a{font-weight:600}
+.sw{display:inline-block;width:14px;height:0;border-top:2.5px solid var(--c)}
+.sw.dash{border-top-style:dashed}
+footer{font-size:11.5px;color:var(--ink-3);padding:0 0 28px}
+
+@media (max-width:640px){
+  .bar .wrap{gap:6px}
+  #year,#months{flex:1 1 100%}
+  .seg button{flex:1;padding:0 6px}
+  #area{flex:1 1 auto}
+  .tog{padding:0 10px}
+  .stat .v{font-size:19px}
+  .stat .s span{display:block}
+  .stat .s .sep{display:none}
+  th,td{padding:7px 5px}
+}
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="wrap">
+  <div class="title"><h1>Puget Sound salmon: catch vs. passage</h1><button class="reset" id="reset" type="button" hidden>Reset</button></div>
+  <div class="seg" id="year" role="group" aria-label="Season"></div>
+  <div class="seg" id="area" role="group" aria-label="Marine area"></div>
+  <button class="tog" id="pink" type="button">Pinks</button>
+  <div class="seg" id="basis" role="group" aria-label="Catch and trips basis"></div>
+  <div class="seg" id="months" role="group" aria-label="Months"></div>
+</div></div>
+
+<div class="wrap">
+  <div class="scope"><span id="scope"></span><button id="clear" type="button" hidden>× Show total</button></div>
+  <section class="stats">
+    <div class="stat"><div class="k"><span class="sw" style="--c:var(--accent)"></span>Catch</div><div class="v" id="vC">–</div><div class="s" id="sC"></div></div>
+    <div class="stat"><div class="k"><span class="sw dash" style="--c:var(--ink-3)"></span>Trips</div><div class="v" id="vT">–</div><div class="s" id="sT"></div></div>
+    <div class="stat"><div class="k"><span class="sw" style="--c:var(--ink)"></span>Passage</div><div class="v" id="vP">–</div><div class="s" id="sP"></div></div>
+  </section>
+
+  <section class="main">
+    <div class="chart"><canvas id="chart" role="img" aria-label="Catch, trips and passage by month"></canvas></div>
+    <table id="sum">
+      <thead><tr><th>Month</th><th>Catch</th><th>Trips</th><th>Passage</th></tr></thead>
+      <tbody></tbody><tfoot></tfoot>
+    </table>
+  </section>
+
+  <section class="src">
+    <h2>Source data</h2>
+    <p class="raw">Raw data:
+      <a href="https://wdfw.wa.gov/fishing/reports/creel/puget-annual" target="_blank" rel="noopener">WDFW creel ↗</a>
+      <a href="https://wdfw.wa.gov/fishing/reports/counts/lake-washington" target="_blank" rel="noopener">Ballard Locks ↗</a>
+      <a href="https://www.nws.usace.army.mil/Missions/Civil-Works/Locks-and-Dams/Mud-Mountain-Dam/Fish-Counts/" target="_blank" rel="noopener">White River trap ↗</a>
+      <a href="https://wdfw.wa.gov/publications/02697" target="_blank" rel="noopener">WDFW estimates ↗</a>
+    </p>
+    <div class="grid two" id="src"></div>
+  </section>
+
+  <footer><b>Estimated</b> = WDFW creel interviews × that area-season's expansion factor (×), which is WDFW's own expanded trip estimate divided by the anglers it interviewed on the same Chinook-season days. Interviews capture roughly 1 in 3 anglers. <b>Sampled</b> = the raw interview counts. Passage: Ballard Locks ladder counts (MA 10); USACE White River trap, Puyallup system (MA 11). Averages use only seasons with data. Updated <span id="updated"></span>.</footer>
+</div>
+
+<script>
+const DATA = /*DATA*/{"creel":{"10":{"2023":[{"i":798,"a":1705,"ch":9,"co":1155,"pk":6},{"i":2658,"a":5790,"ch":447,"co":3464,"pk":183},{"i":2817,"a":6506,"ch":790,"co":1776,"pk":4801},{"i":2280,"a":5001,"ch":25,"co":3520,"pk":1037},{"i":758,"a":1516,"ch":19,"co":612,"pk":1},null],"2024":[{"i":755,"a":1645,"ch":23,"co":1025,"pk":0},{"i":1988,"a":4425,"ch":688,"co":1018,"pk":1},{"i":1965,"a":4249,"ch":521,"co":2496,"pk":3},{"i":3600,"a":8153,"ch":10,"co":9230,"pk":0},{"i":591,"a":1202,"ch":2,"co":576,"pk":0},{"i":47,"a":88,"ch":0,"co":13,"pk":0}],"2025":[{"i":799,"a":1778,"ch":8,"co":1105,"pk":16},{"i":2026,"a":4477,"ch":561,"co":620,"pk":239},{"i":2937,"a":6737,"ch":559,"co":1440,"pk":5827},{"i":2960,"a":6356,"ch":26,"co":5795,"pk":407},{"i":721,"a":1403,"ch":2,"co":551,"pk":0},{"i":37,"a":69,"ch":0,"co":2,"pk":0}],"2026":[{"i":759,"a":1624,"ch":1,"co":1201,"pk":0},{"i":2408,"a":5450,"ch":464,"co":1400,"pk":0},{"i":2119,"a":4683,"ch":27,"co":2783,"pk":3},{"i":3152,"a":7282,"ch":20,"co":8305,"pk":1},null,null]},"11":{"2023":[{"i":1275,"a":2625,"ch":456,"co":138,"pk":1},{"i":1348,"a":2695,"ch":310,"co":256,"pk":3},{"i":767,"a":1167,"ch":0,"co":10,"pk":621},{"i":1672,"a":3314,"ch":12,"co":1792,"pk":345},{"i":463,"a":878,"ch":1,"co":199,"pk":6},{"i":7,"a":11,"ch":0,"co":0,"pk":0}],"2024":[{"i":1457,"a":2833,"ch":324,"co":21,"pk":0},{"i":910,"a":1712,"ch":214,"co":95,"pk":0},{"i":2536,"a":4906,"ch":680,"co":791,"pk":0},{"i":2121,"a":4216,"ch":48,"co":2552,"pk":0},{"i":327,"a":617,"ch":1,"co":88,"pk":0},{"i":44,"a":85,"ch":0,"co":2,"pk":0}],"2025":[{"i":1748,"a":3237,"ch":448,"co":16,"pk":0},{"i":1024,"a":1892,"ch":203,"co":47,"pk":146},{"i":3580,"a":7762,"ch":498,"co":213,"pk":6253},{"i":1705,"a":3183,"ch":5,"co":1090,"pk":233},{"i":304,"a":524,"ch":0,"co":74,"pk":0},{"i":19,"a":34,"ch":0,"co":1,"pk":0}],"2026":[{"i":1465,"a":2583,"ch":282,"co":10,"pk":0},{"i":1775,"a":3911,"ch":320,"co":83,"pk":0},{"i":2508,"a":5014,"ch":592,"co":408,"pk":0},{"i":1567,"a":2856,"ch":13,"co":1198,"pk":0},null,null]}},"ballard":{"2023":[{"ch":0,"co":0,"so":4145},{"ch":320,"co":0,"so":17657},{"ch":19550,"co":0,"so":2058},{"ch":3454,"co":48634,"so":47},{"ch":0,"co":552,"so":0},null],"2024":[{"ch":2,"co":0,"so":2060},{"ch":781,"co":0,"so":20318},{"ch":15111,"co":110,"so":803},{"ch":2628,"co":19059,"so":7},{"ch":0,"co":42,"so":0},null],"2025":[{"ch":0,"co":0,"so":349},{"ch":391,"co":0,"so":14410},{"ch":15606,"co":331,"so":3118},{"ch":2757,"co":27789,"so":4},{"ch":0,"co":30,"so":0},null],"2026":[{"ch":0,"co":0,"so":281},{"ch":308,"co":0,"so":29561},{"ch":10725,"co":420,"so":1460},{"ch":3642,"co":13074,"so":0},null,null]},"puyallup":{"2023":[{"ch":730,"co":0,"pk":0},{"ch":1678,"co":0,"pk":10},{"ch":2121,"co":2179,"pk":325853},{"ch":1623,"co":20321,"pk":1002215},{"ch":87,"co":6584,"pk":29020},{"ch":0,"co":548,"pk":43}],"2024":[null,null,null,null,null,null],"2025":[{"ch":633,"co":0,"pk":0},{"ch":1333,"co":0,"pk":1214},{"ch":1482,"co":676,"pk":453497},{"ch":835,"co":4370,"pk":388573},null,null],"2026":[null,null,null,null,null,null]}}/*END*/;
+const YEARS = [2023, 2024, 2025, 2026];
+const M = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
+
+const UPDATED = 'Sep 30, 2026';
+/* WDFW's sample_date is a list position (1 = newest year); update_data.py rewrites this map from the live page. */
+const CREEL_IDX = {"2023":4,"2024":3,"2025":2,"2026":1};
+
+/* Expansion from interviews to fishery totals.
+   factor = WDFW's expanded angler-trip estimate ÷ anglers interviewed on the same Chinook-season days
+   (summer mark-selective fishery post-season reports). Coho, Chinook and pink expand by the same ratio
+   within ~10%, so one factor per area-season is applied to every creel number.
+   2026: no post-season report yet; factor = WDFW in-season Chinook harvest estimate ÷ Chinook interviewed. */
+const MSF = y => ({ 2023: '02502', 2024: '02650', 2025: '02697' })[y];
+const EST = {
+  '10': { 2023: [2.93, 65], 2024: [3.18, 63], 2025: [2.96, 66], 2026: [3.50] },
+  '11': { 2023: [2.24, 77], 2024: [2.82, 75], 2025: [2.48, 78], 2026: [2.91] }
+};
+const estLink = (a, y) => MSF(y)
+  ? [`WDFW ${y} report ↗`, `https://wdfw.wa.gov/sites/default/files/publications/${MSF(y)}/wdfw${MSF(y)}.pdf#page=${EST[a][y][1]}`]
+  : ['WDFW in-season ↗', 'https://wdfw.wa.gov/fishing/reports/creel/seasonal'];
+const LW = 'https://wdfw.wa.gov/fishing/reports/counts/lake-washington';
+const LINKS = {
+  creel: (a, y) => [['Report', `https://wdfw.wa.gov/fishing/reports/creel/puget-annual?sample_date=${CREEL_IDX[y]}&catch_area=${a}`], ['CSV', `https://wdfw.wa.gov/fishing/reports/creel/puget-annual/export?_format=csv&sample_date=${CREEL_IDX[y]}&catch_area=${a}`]],
+  ballard: y => ({
+    2023: [['WDFW (archived)', 'https://web.archive.org/web/20231205183339/' + LW]],
+    2024: [['USACE .xlsx (final)', 'https://web.archive.org/web/20241129012758/https://www.nws.usace.army.mil/Portals/27/docs/civilworks/locks_dams/chittenden/Fish%20Count/Fish%20count%2010022024.xlsx']],
+    2025: [['WDFW (archived)', 'https://web.archive.org/web/20251010034418/' + LW]],
+    2026: [['WDFW', LW]]
+  })[y],
+  puyallup: y => ({
+    2023: [['USACE .xlsm', 'https://web.archive.org/web/20241129015122/https://www.nws.usace.army.mil/Portals/27/docs/civilworks/locks_dams/mudmountain/Fish%20Counts/2023%20Fish%20Counts/2023%20MMD%20Fish%20Count%20UPDATED%2012-22-23.xlsm?ver=y3c6p2s675g4seKH9kdtJg%3d%3d']],
+    2024: [['Tribe report p.70', 'https://www.puyalluptribe-nsn.gov/wp-content/uploads/2024-2025-Annual-Fisheries-Report.pdf#page=74']],
+    2025: [['USACE .xlsx', 'https://web.archive.org/web/20260209023434/https://www.nws.usace.army.mil/Portals/27/MMD%20FPF%20Fish%20Count%2018SEP2025.xlsx']],
+    2026: [['USACE', 'https://www.nws.usace.army.mil/Missions/Civil-Works/Locks-and-Dams/Mud-Mountain-Dam/Fish-Counts/']]
+  })[y]
+};
+/* Only caveats that change how a number reads. key: source|year|month ('*' = any) */
+const NOTES = {
+  'ballard|*|2': 'Aug coho includes the Jun 12–Aug 31 lump count.',
+  'ballard|*|4': 'Oct is Oct 1–2 only; no November count.',
+  'ballard|2026|3': 'Sep 2026 through Sep 29.',
+  'puyallup|2024|*': '2024 monthly counts not published. Annual (Tribe): 3,041 Chinook, 15,048 coho.',
+  'puyallup|2025|3': 'Counts end Sep 18, 2025.',
+  'puyallup|2026|*': '2026 counts not yet published.'
+};
+
+/* ---------------- state (mirrored to the URL) ---------------- */
+const DEF = { y: 'avg', a: 'both', m: [0, 1, 2, 3, 4, 5], p: false, b: 'est' };
+let S = load(), focus = null;
+function load() {
+  const s = structuredClone(DEF), q = new URLSearchParams(location.hash.slice(1));
+  if (YEARS.includes(+q.get('y'))) s.y = +q.get('y');
+  if (['10', '11', 'both'].includes(q.get('a'))) s.a = q.get('a');
+  const m = (q.get('m') || '').split('.').filter(x => x !== '').map(Number).filter(n => n >= 0 && n < 6);
+  if (m.length) s.m = [...new Set(m)].sort();
+  s.p = q.get('p') === '1';
+  if (q.get('b') === 'raw') s.b = 'raw';
+  return s;
+}
+function set(p) {
+  Object.assign(S, p);
+  if (!S.m.includes(focus)) focus = null;
+  history.replaceState(null, '', '#' + new URLSearchParams({ y: S.y, a: S.a, m: S.m.join('.'), p: +S.p, b: S.b }));
+  render();
+}
+
+/* ---------------- calculations ---------------- */
+const areas = () => S.a === 'both' ? ['10', '11'] : [S.a];
+const passKey = a => a === '10' ? 'ballard' : 'puyallup';
+const years = () => S.y === 'avg' ? YEARS : [S.y];
+
+// One season + month, summed over selected areas. A group is null unless every area has data.
+function one(y, i) {
+  let c = { a: 0, ch: 0, co: 0, pk: 0 }, p = { ch: 0, co: 0, pk: 0 };
+  for (const a of areas()) {
+    const r = DATA.creel[a][y][i];
+    const x = S.b === 'est' ? EST[a][y][0] : 1;
+    if (!r) c = null; else if (c) { c.a += r.a * x; c.ch += r.ch * x; c.co += r.co * x; c.pk += r.pk * x; }
+    const q = DATA[passKey(a)][y][i];
+    if (!q) p = null; else if (p) { p.ch += q.ch; p.co += q.co; p.pk += q.pk || 0; }
+  }
+  return { c, p };
+}
+function avg(list) {
+  if (!list.length) return null;
+  const o = {}; for (const k in list[0]) o[k] = list.reduce((s, r) => s + r[k], 0) / list.length;
+  return o;
+}
+function month(i) {
+  const rs = years().map(y => one(y, i));
+  const cs = rs.map(r => r.c).filter(Boolean), ps = rs.map(r => r.p).filter(Boolean);
+  const c = avg(cs), p = avg(ps), pk = S.p ? 1 : 0;
+  return {
+    i, c, p, nc: cs.length, np: ps.length,
+    catch: c && c.ch + c.co + pk * c.pk, trips: c && c.a, pass: p && p.ch + p.co + pk * p.pk
+  };
+}
+const rows = () => S.m.map(month);
+const total = (rs, f) => { const v = rs.map(f).filter(x => x != null); return v.length ? v.reduce((a, b) => a + b, 0) : null; };
+
+/* ---------------- formatting ---------------- */
+const $ = id => document.getElementById(id);
+const f = v => v == null ? '—' : Math.round(v).toLocaleString('en-US');
+const k = v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? +(v / 1e3).toFixed(v >= 1e4 ? 0 : 1) + 'k' : String(v);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const SEP = '<i class="sep" style="font-style:normal"> · </i>';
+const monthsText = () => S.m.length === 6 ? 'Jun–Nov' : S.m.every((m, j) => !j || m === S.m[j - 1] + 1) && S.m.length > 1 ? M[S.m[0]] + '–' + M[S.m.at(-1)] : S.m.map(m => M[m]).join(', ');
+
+/* ---------------- controls ---------------- */
+function seg(el, opts, cur, pick) {
+  el.innerHTML = opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${String(cur(v))}">${l}</button>`).join('');
+  for (const b of el.children) b.onclick = () => pick(b.dataset.v);
+}
+function controls() {
+  seg($('year'), [['avg', '4-yr avg'], ...YEARS.map(y => [y, y])], v => String(v) === String(S.y), v => set({ y: v === 'avg' ? 'avg' : +v }));
+  seg($('area'), [['10', 'MA 10'], ['11', 'MA 11'], ['both', 'Both']], v => v === S.a, v => set({ a: v }));
+  seg($('months'), [['all', 'All'], ...M.map((m, i) => [i, m])], v => v === 'all' ? S.m.length === 6 : S.m.length < 6 && S.m.includes(+v), v => {
+    if (v === 'all') return set({ m: DEF.m });
+    const i = +v;
+    // From "All", a tap isolates that month; otherwise it toggles it.
+    let m = S.m.length === 6 ? [i] : S.m.includes(i) ? S.m.filter(x => x !== i) : [...S.m, i].sort((a, b) => a - b);
+    set({ m: m.length ? m : DEF.m });
+  });
+  seg($('basis'), [['est', 'Est.'], ['raw', 'Raw']], v => v === S.b, v => set({ b: v }));
+  $('basis').children[0].title = 'Estimated fishery totals (interviews × WDFW expansion factor)';
+  $('basis').children[1].title = 'Raw creel interview counts';
+  $('pink').setAttribute('aria-pressed', S.p);
+  $('reset').hidden = JSON.stringify(S) === JSON.stringify(DEF);
+}
+
+/* ---------------- stats ---------------- */
+function stats(rs) {
+  const r = focus == null ? rs : rs.filter(x => x.i === focus);
+  $('scope').textContent = `${focus == null ? monthsText() : M[focus]} · ${S.y === 'avg' ? '2023–26 avg' : S.y} · ${S.a === 'both' ? 'MA 10 + 11' : 'MA ' + S.a}`;
+  $('clear').hidden = focus == null;
+  const c = total(r, x => x.catch), t = total(r, x => x.trips), p = total(r, x => x.pass);
+  const comp = (g, key) => total(r, x => x[g] && x[g][key]);
+  $('vC').textContent = f(c); $('vT').textContent = f(t); $('vP').textContent = f(p);
+  const pinkC = S.p ? `${SEP}<span>Pink ${f(comp('c', 'pk'))}</span>` : '';
+  $('sC').innerHTML = c == null ? 'No data' : `<span>Chinook ${f(comp('c', 'ch'))}</span>${SEP}<span>Coho ${f(comp('c', 'co'))}</span>${pinkC}`;
+  $('sT').innerHTML = t == null ? 'No data' : `<span>${(c / t).toFixed(2)} fish/angler</span>`;
+  const pinkP = S.p && S.a !== '10' ? `${SEP}<span>Pink ${f(comp('p', 'pk'))}</span>` : '';
+  $('sP').innerHTML = p == null ? 'No data' : `<span>Chinook ${f(comp('p', 'ch'))}</span>${SEP}<span>Coho ${f(comp('p', 'co'))}</span>${pinkP}`;
+}
+
+/* ---------------- chart ---------------- */
+let chart, hover = false;
+const guide = {
+  id: 'guide', afterDatasetsDraw(c) {
+    const j = S.m.indexOf(focus); if (j < 0) return;
+    const x = c.scales.x.getPixelForValue(j), { top, bottom } = c.chartArea, g = c.ctx;
+    g.save(); g.strokeStyle = css('--ink-3'); g.setLineDash([3, 3]); g.beginPath(); g.moveTo(x, top); g.lineTo(x, bottom); g.stroke(); g.restore();
+  }
+};
+function drawChart(rs) {
+  if (!window.Chart) return;
+  const line = (label, key, color, dash) => ({
+    label, data: rs.map(r => r[key] == null ? null : Math.round(r[key])), borderColor: color, backgroundColor: color,
+    borderWidth: 2, borderDash: dash, pointRadius: rs.map(r => r.i === focus ? 5 : rs.length < 3 ? 4 : 2.5), pointHoverRadius: 5, cubicInterpolationMode: 'monotone', spanGaps: false
+  });
+  const data = { labels: rs.map(r => M[r.i]), datasets: [line('Catch', 'catch', css('--accent'), []), line('Trips', 'trips', css('--ink-3'), [5, 4]), line('Passage', 'pass', css('--ink'), [])] };
+  const tick = { color: css('--ink-3'), font: { family: 'Inter', size: 11 } };
+  const options = {
+    responsive: true, maintainAspectRatio: false, animation: { duration: 200 },
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    scales: {
+      x: { grid: { display: false }, border: { color: css('--line') }, ticks: tick, offset: rs.length < 3 },
+      y: { beginAtZero: true, grace: '8%', grid: { color: css('--line') }, border: { display: false }, ticks: { ...tick, maxTicksLimit: 5, callback: k } }
+    },
+    onHover: (e, els) => { if (e.native?.pointerType !== 'touch') setFocus(els.length ? rs[els[0].index].i : null, true); },
+    onClick: (e, els) => {
+      if (!els.length) return;
+      const i = rs[els[0].index].i;
+      if (i === focus && hover) { hover = false; return; }
+      setFocus(i === focus ? null : i);
+    }
+  };
+  if (chart) { chart.data = data; chart.options = options; chart.update(); }
+  else chart = new Chart($('chart'), { type: 'line', data, options, plugins: [guide] });
+}
+$('chart').addEventListener('mouseleave', () => { if (hover) setFocus(null, true); });
+function setFocus(i, fromHover = false) {
+  if (fromHover && !hover && focus != null) return;   // hovering never overrides a clicked month
+  if (i === focus) return;
+  hover = fromHover && i != null; focus = i;
+  const rs = rows(); stats(rs); summary(rs);
+  if (chart) { chart.data.datasets.forEach(d => d.pointRadius = rs.map(r => r.i === focus ? 5 : rs.length < 3 ? 4 : 2.5)); chart.update('none'); }
+}
+
+/* ---------------- summary table ---------------- */
+function summary(rs) {
+  const full = years().length;
+  const cell = (v, n) => v == null ? '<td class="muted">—</td>' : `<td${n < full ? ` class="part" title="Average of ${n} season${n > 1 ? 's' : ''}"` : ''}>${f(v)}</td>`;
+  $('sum').tBodies[0].innerHTML = rs.map(r => `<tr data-i="${r.i}" class="${r.i === focus ? 'on' : ''}"><td>${M[r.i]}</td>${cell(r.catch, r.nc)}${cell(r.trips, r.nc)}${cell(r.pass, r.np)}</tr>`).join('');
+  $('sum').tFoot.innerHTML = rs.length > 1 ? `<tr><td>Total</td><td>${f(total(rs, x => x.catch))}</td><td>${f(total(rs, x => x.trips))}</td><td>${f(total(rs, x => x.pass))}</td></tr>` : '';
+  for (const tr of $('sum').tBodies[0].rows) tr.onclick = () => setFocus(+tr.dataset.i === focus ? null : +tr.dataset.i);
+}
+
+/* ---------------- source tables (same filters) ---------------- */
+function sources() {
+  const blocks = [];
+  for (const a of areas()) {
+    blocks.push(block(`MA ${a} creel interviews · WDFW`, 'creel' + a, y => DATA.creel[a][y], y => LINKS.creel(a, y), [['a', 'Anglers'], ['ch', 'Chinook'], ['co', 'Coho'], ['pk', 'Pink']]));
+    blocks.push(a === '10'
+      ? block('Ballard Locks · WDFW', 'ballard', y => DATA.ballard[y], LINKS.ballard, [['ch', 'Chinook'], ['co', 'Coho']])
+      : block('White River trap (Puyallup) · USACE', 'puyallup', y => DATA.puyallup[y], LINKS.puyallup, [['ch', 'Chinook'], ['co', 'Coho'], ['pk', 'Pink']]));
+  }
+  $('src').innerHTML = blocks.join('');
+}
+function block(title, key, get, links, cols) {
+  cols = cols.filter(([c]) => c !== 'pk' || S.p);
+  const multi = years().length > 1, notes = new Set();
+  let body = '';
+  for (const y of years()) {
+    const rs = get(y);
+    const n = NOTES[`${key}|${y}|*`]; if (n) notes.add(n);
+    let lk = links(y).map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l} ↗</a>`).join(' ');
+    if (key.startsWith('creel')) { const a = key.slice(5), [l, u] = estLink(a, y); lk += ` <span class="muted">×${EST[a][y][0].toFixed(2)}</span> <a href="${u}" target="_blank" rel="noopener">${l}</a>`; }
+    if (multi) body += `<tr class="yr"><td colspan="${cols.length + 1}"><b>${y}</b> ${lk}</td></tr>`;
+    S.m.forEach((i, j) => {
+      const r = rs[i], nt = NOTES[`${key}|${y}|${i}`] || NOTES[`${key}|*|${i}`]; if (nt && r) notes.add(nt);
+      body += `<tr><td>${M[i]}</td>${cols.map(([c]) => `<td${r ? '' : ' class="muted"'}>${r ? f(r[c]) : '—'}</td>`).join('')}</tr>`;
+    });
+  }
+  let ls = multi ? '' : links(S.y).map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${l} ↗</a>`).join(' ');
+  if (!multi && key.startsWith('creel')) { const a = key.slice(5), [l, u] = estLink(a, S.y); ls += ` <span class="muted">×${EST[a][S.y][0].toFixed(2)}</span> <a href="${u}" target="_blank" rel="noopener">${l}</a>`; }
+  return `<div class="block"><h3>${title}<span class="l">${ls}</span></h3>
+    <table><thead><tr><th>Month</th>${cols.map(c => `<th>${c[1]}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table>
+    ${[...notes].map(t => `<p class="note">${t}</p>`).join('')}</div>`;
+}
+
+function render() { $('updated').textContent = UPDATED; const rs = rows(); controls(); stats(rs); drawChart(rs); summary(rs); sources(); }
+$('pink').onclick = () => set({ p: !S.p });
+$('reset').onclick = () => { focus = null; set(structuredClone(DEF)); };
+$('clear').onclick = () => setFocus(null);
+addEventListener('hashchange', () => { S = load(); render(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', render);
+if (window.Chart) Chart.defaults.font.family = 'Inter, sans-serif';
+render();
+</script>
+</body>
+</html>

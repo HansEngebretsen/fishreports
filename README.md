@@ -1,9 +1,20 @@
-# Puget Sound Catch vs. Passage
+# `Fishing reports`
 
-A single-page dashboard comparing recreational salmon catch and angler effort in Puget Sound
-Marine Areas 10 (Seattle–Bremerton) and 11 (Tacoma–Vashon) with fish passage counts, June–November, 2023–2026.
+Analysis of fishing in Puget Sound areas 10 and 11, month by month, from public passage data and catch reports from previous years.
 
-Live at **https://haaans.com/fishreports/**. Locally, open `index.html` in a browser. There is no build step.
+
+<div align="center">
+  
+[<kbd><br>haaans.com/fishreports<br><br></kbd>](https://haaans.com/fishreports)
+
+</div>
+
+
+<p align="center">
+<img src="fish-screenshot.png" alt="app" width="500">
+</p>
+
+The page compares recreational salmon catch and angler effort in Marine Areas 10 (Seattle–Bremerton) and 11 (Tacoma–Vashon) with fish passage counts, June–November, 2023–2026. To run it locally, open `index.html` in a browser; there is no build step.
 
 ## What it shows
 

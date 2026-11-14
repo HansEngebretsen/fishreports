@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>wrong page - or right one?</title>
+<meta name="robots" content="noindex">
+<!-- This site's 404. The real page lives in one place, https://haaans.com/404.html (newfolio's 404.html); this stub shows it.
+     Written by newfolio scripts/notfound.py: change the 404 there, not here. -->
+<!-- Google Analytics: page address only, so nothing kept in the URL reaches Google -->
+<script>
+(function () {
+  if (location.hostname !== 'haaans.com') return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', 'G-MGSJYZJ5YJ', {
+    content_group: 'fishreports',
+    page_location: location.origin + location.pathname,
+    page_referrer: document.referrer.split(/[?#]/)[0]
+  });
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-MGSJYZJ5YJ';
+  document.head.appendChild(s);
+})();
+</script>
+</head>
+<body>
+<noscript><p style="font:16px system-ui;padding:2rem">Page not found. <a href="/fishreports/">Back</a></p></noscript>
+<script>
+(function () {
+  window.FOLIO404_HOME = '/fishreports/';
+  fetch('https://haaans.com/404.html?h=' + Math.floor(Date.now() / 36e5)).then(function (r) { return r.text(); }).then(function (t) {
+    if (t.indexOf('folio404') < 0) throw 0;
+    t = t.replace(/<!-- Google Analytics[\s\S]*?<\/script>\n?/, '');
+    document.open(); document.write(t); document.close();
+  }).catch(function () {
+    document.body.innerHTML = '<p style="font:16px system-ui;padding:2rem">Page not found. <a href="/fishreports/">Back</a></p>';
+  });
+})();
+</script>
+</body>
+</html>

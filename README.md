@@ -1,6 +1,6 @@
 # `fishreports`
 
-Puget Sound salmon, month by month: recreational catch and angler trips in Marine Areas 10 and 11 against fish passage counts, from public WDFW, Army Corps and tribal data. Sources and method are in [DATA.md](DATA.md).
+Salmon counts in the Puget Sound by month, based on publicly reported numbers. Sources and method are in [DATA.md](DATA.md).
 
 
 <div align="center">
